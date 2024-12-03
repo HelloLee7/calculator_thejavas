@@ -1,10 +1,11 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class calculatingTest extends JFrame implements ActionListener {
-
     private JTextField textField;
     private JButton[] numberButtons;
     private JButton[] operatorButtons;
@@ -16,23 +17,53 @@ public class calculatingTest extends JFrame implements ActionListener {
 
     public calculatingTest() {
         setTitle("자바 계산기");
-        setSize(300, 400); // 전체 창 크기 유지
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        textField = new JTextField();
-        textField.setFont(new Font("Arial", Font.PLAIN, 36)); // 폰트 크기 확대
-        textField.setPreferredSize(new Dimension(300, 80)); // 텍스트 필드 크기 조정
+        // 배경색 및 전경색 설정
+        Color backgroundColor = Color.decode("#ababab");
+        Color foregroundColor = Color.WHITE;
+        Color borderColor = Color.decode("#ff6600");
+
+        try {
+            UIManager.put("Button.border", new LineBorder(borderColor));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        SwingUtilities.updateComponentTreeUI(this);
+
+        textField = new JTextField() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (isFocusOwner()) {
+                    g.setColor(borderColor);
+                    g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+                }
+            }
+        };
+        Border lineBorder = BorderFactory.createLineBorder(borderColor,2);
+        textField.setBorder(BorderFactory.createCompoundBorder(textField.getBorder(),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+        textField.setBorder(lineBorder);
+        textField.setFont(new Font("Arial", Font.PLAIN, 36));
+        textField.setPreferredSize(new Dimension(300, 80));
         textField.setHorizontalAlignment(JTextField.RIGHT);
+        textField.setBackground(backgroundColor);
+        textField.setForeground(foregroundColor);
+        textField.setCaretColor(foregroundColor);
         add(textField, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(4, 4, 5, 5)); // 행 개수 줄여서 빈 공간 제거
+        buttonPanel.setLayout(new GridLayout(4, 4, 5, 5));
+        buttonPanel.setBackground(backgroundColor);
 
         numberButtons = new JButton[10];
         for (int i = 0; i < 10; i++) {
             numberButtons[i] = new JButton(String.valueOf(i));
             numberButtons[i].addActionListener(this);
+            numberButtons[i].setBackground(backgroundColor);
+            numberButtons[i].setForeground(foregroundColor);
             buttonPanel.add(numberButtons[i]);
         }
 
@@ -43,21 +74,27 @@ public class calculatingTest extends JFrame implements ActionListener {
         operatorButtons[3] = new JButton("/");
         for (int i = 0; i < 4; i++) {
             operatorButtons[i].addActionListener(this);
+            operatorButtons[i].setBackground(backgroundColor);
+            operatorButtons[i].setForeground(foregroundColor);
             buttonPanel.add(operatorButtons[i]);
         }
 
         equalsButton = new JButton("=");
         equalsButton.addActionListener(this);
+        equalsButton.setBackground(backgroundColor);
+        equalsButton.setForeground(foregroundColor);
         buttonPanel.add(equalsButton);
 
         clearButton = new JButton("C");
         clearButton.addActionListener(this);
+        clearButton.setBackground(backgroundColor);
+        clearButton.setForeground(foregroundColor);
         buttonPanel.add(clearButton);
 
         add(buttonPanel, BorderLayout.CENTER);
 
-        pack(); // 컨텐츠 크기에 맞게 창 크기 자동 조절
-        setLocationRelativeTo(null); // 화면 중앙에 창 표시
+        pack();
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
@@ -93,20 +130,20 @@ public class calculatingTest extends JFrame implements ActionListener {
                 result = num1 - num2;
                 break;
             case "*":
-                result = num1 * num2;
+                result = num1 * num2; // 곱셈
                 break;
             case "/":
-                if (num2 != 0) {
-                    result = num1 / num2;
+                if (num2 != 0) { // 0으로 나누는지 검사
+                    result = num1 / num2; // 나눗셈
                 } else {
-                    textField.setText("Error");
+                    textField.setText("Error"); // 0으로 나누면 에러 메시지 표시
                     return;
                 }
                 break;
         }
     }
 
-    public static void main(String[] args) {
-        new calculatingTest();
+    public static void main(String[] args) { // 메인 메소드
+        new calculatingTest(); // 계산기 객체 생성 및 실행
     }
 }
