@@ -1,105 +1,142 @@
-import javax.swing.*; // Swing GUI 라이브러리 import
-import java.awt.*; // AWT 그래픽 라이브러리 import
-import java.awt.event.ActionEvent; // 액션 이벤트 import
-import java.awt.event.ActionListener; // 액션 리스너 import
+// 필요한 라이브러리들을 import 합니다.
+import javax.swing.*; // GUI 컴포넌트들을 제공하는 Swing 라이브러리
+import java.awt.*; // AWT(Abstract Window Toolkit) 라이브러리, GUI와 그래픽 관련 클래스 제공
+import java.awt.event.ActionEvent; // 액션 이벤트 처리를 위한 클래스
+import java.awt.event.ActionListener; // 액션 리스너 인터페이스
 
-public class calculating extends JFrame implements ActionListener { // JFrame 상속 및 ActionListener 구현
-    private JTextField textField; // 계산 결과를 보여주는 텍스트 필드
-    private JButton[] numberButtons; // 숫자 버튼 배열
-    private JButton[] operatorButtons; // 연산자 버튼 배열
-    private JButton equalsButton; // 등호 버튼
-    private JButton clearButton; // 초기화 버튼
+// 'calculating' 클래스를 선언합니다. JFrame을 상속받고 ActionListener 인터페이스를 구현합니다.
+// JFrame은 윈도우 창을 만드는 클래스이고, ActionListener는 버튼 클릭 등의 이벤트를 처리하는 인터페이스입니다.
+public class calculating extends JFrame implements ActionListener {
+    // GUI 컴포넌트들을 선언합니다.
+    private JTextField textField; // 계산 결과를 보여주고 입력을 받는 텍스트 필드
+    private JButton[] numberButtons; // 숫자 버튼들을 저장하는 배열
+    private JButton[] operatorButtons; // 연산자 버튼들을 저장하는 배열
+    private JButton equalsButton; // '=' 버튼
+    private JButton clearButton; // 'C' (Clear) 버튼
 
-    private double num1, num2, result; // 계산에 사용될 숫자 변수와 결과 변수
-    private String operator; // 연산자 저장 변수
+    // 계산에 필요한 변수들을 선언합니다.
+    private double num1, num2, result; // 첫 번째 숫자, 두 번째 숫자, 계산 결과를 저장하는 변수
+    private String operator; // 연산자를 저장하는 변수
 
-    public calculating() { // 생성자
-        setTitle("자바 계산기"); // 윈도우 제목 설정
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 윈도우 닫을 때 프로그램 종료
-        setLayout(new BorderLayout()); // 레이아웃 설정 (BorderLayout)
+    private int defaultFontSize = 36;  // 기본 폰트 크기
+    private int minFontSize = 12;      // 최소 폰트 크기
+
+    // 'calculating' 클래스의 생성자입니다.
+    public calculating() {
+        // 윈도우 창의 제목을 설정합니다.
+        setTitle("자바 계산기");
+        // 윈도우 창을 닫을 때 프로그램을 종료하도록 설정합니다.
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // 윈도우 창의 레이아웃을 BorderLayout으로 설정합니다.
+        // BorderLayout은 컴포넌트들을 동서남북중앙에 배치하는 레이아웃 매니저입니다.
+        setLayout(new BorderLayout());
 
         // 배경색 및 전경색 설정
-        Color backgroundColor = Color.decode("#e38c00"); // 배경색 설정 (회색)
-        Color foregroundColor = Color.BLACK; // 전경색 (글자색) 설정 (흰색)
+        Color backgroundColor = Color.decode("#e38c00"); // 배경색을 주황색으로 설정합니다.
+        Color foregroundColor = Color.BLACK; // 전경색(글자색)을 검정색으로 설정합니다.
 
-        textField = new JTextField(); // 텍스트 필드 생성
-        textField.setFont(new Font("Arial", Font.PLAIN, 36)); // 폰트 설정 (Arial, 36pt)
-        textField.setPreferredSize(new Dimension(150, 180)); // 텍스트 필드 크기 설정 (300x80)
-        textField.setHorizontalAlignment(JTextField.RIGHT); // 텍스트 필드 오른쪽 정렬
+        // 텍스트 필드를 생성하고 설정합니다.
+        textField = new JTextField();
+        textField.setFont(new Font("Arial", Font.PLAIN, defaultFontSize)); // 폰트 설정 (Arial, 기본 스타일, 36 크기)
+        textField.setPreferredSize(new Dimension(150, 80)); // 텍스트 필드의 선호 크기를 설정합니다.
+        textField.setHorizontalAlignment(JTextField.RIGHT); // 텍스트를 오른쪽 정렬합니다.
         textField.setBackground(backgroundColor); // 배경색 설정
         textField.setForeground(foregroundColor); // 전경색 설정
-        textField.setCaretColor(foregroundColor); // 커서 색 설정
-        add(textField, BorderLayout.NORTH); // 텍스트 필드를 상단에 추가
+        textField.setCaretColor(foregroundColor); // caret(커서) 색상 설정
+        add(textField, BorderLayout.NORTH); // 텍스트 필드를 윈도우 창의 북쪽에 추가합니다.
 
-        JPanel buttonPanel = new JPanel(); // 버튼을 담을 패널 생성
-        buttonPanel.setLayout(new GridLayout(4, 4, 5, 5)); // 패널 레이아웃 설정 (GridLayout, 4x4, 간격 5)
+        // 버튼들을 담을 패널을 생성하고 설정합니다.
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(4, 4, 8, 5)); // 4x4 grid 레이아웃으로 설정, 가로 세로 간격 5
         buttonPanel.setBackground(backgroundColor); // 배경색 설정
 
-        numberButtons = new JButton[10]; // 숫자 버튼 배열 초기화 (0~9)
+        // 숫자 버튼들을 생성하고 설정합니다.
+        numberButtons = new JButton[10]; // 0부터 9까지 10개의 버튼 배열 생성
         for (int i = 0; i < 10; i++) {
-            numberButtons[i] = new JButton(String.valueOf(i)); // 숫자 버튼 생성
-            numberButtons[i].addActionListener(this); // 액션 리스너 등록
+            numberButtons[i] = new JButton(String.valueOf(i)); // 각 숫자에 해당하는 버튼 생성
+            numberButtons[i].addActionListener(this); // 버튼에 액션 리스너(this, 즉 현재 클래스)를 등록합니다.
             numberButtons[i].setBackground(backgroundColor); // 배경색 설정
             numberButtons[i].setForeground(foregroundColor); // 전경색 설정
-            buttonPanel.add(numberButtons[i]); // 버튼 패널에 추가
+            buttonPanel.add(numberButtons[i]); // 숫자 버튼을 버튼 패널에 추가합니다.
         }
 
-        operatorButtons = new JButton[4]; // 연산자 버튼 배열 초기화 (+, -, *, /)
-        operatorButtons[0] = new JButton("+"); // 덧셈 버튼 생성
-        operatorButtons[1] = new JButton("-"); // 뺄셈 버튼 생성
-        operatorButtons[2] = new JButton("*"); // 곱셈 버튼 생성
-        operatorButtons[3] = new JButton("/"); // 나눗셈 버튼 생성
+        // 연산자 버튼들을 생성하고 설정합니다.
+        operatorButtons = new JButton[4]; // 4개의 연산자 버튼 배열 생성
+        operatorButtons[0] = new JButton("+"); // 덧셈 버튼
+        operatorButtons[1] = new JButton("-"); // 뺄셈 버튼
+        operatorButtons[2] = new JButton("*"); // 곱셈 버튼
+        operatorButtons[3] = new JButton("/"); // 나눗셈 버튼
         for (int i = 0; i < 4; i++) {
-            operatorButtons[i].addActionListener(this); // 액션 리스너 등록
+            operatorButtons[i].addActionListener(this); // 연산자 버튼에 액션 리스너 등록
             operatorButtons[i].setBackground(backgroundColor); // 배경색 설정
             operatorButtons[i].setForeground(foregroundColor); // 전경색 설정
-            buttonPanel.add(operatorButtons[i]); // 버튼 패널에 추가
+            buttonPanel.add(operatorButtons[i]); // 연산자 버튼을 버튼 패널에 추가합니다.
         }
 
-        equalsButton = new JButton("="); // 등호 버튼 생성
-        equalsButton.addActionListener(this); // 액션 리스너 등록
+        // '=' 버튼을 생성하고 설정합니다.
+        equalsButton = new JButton("=");
+        equalsButton.addActionListener(this); // '=' 버튼에 액션 리스너 등록
         equalsButton.setBackground(backgroundColor); // 배경색 설정
         equalsButton.setForeground(foregroundColor); // 전경색 설정
-        buttonPanel.add(equalsButton); // 버튼 패널에 추가
+        buttonPanel.add(equalsButton); // '=' 버튼을 버튼 패널에 추가합니다.
 
-        clearButton = new JButton("C"); // 초기화 버튼 생성
-        clearButton.addActionListener(this); // 액션 리스너 등록
+        // 'C' 버튼을 생성하고 설정합니다.
+        clearButton = new JButton("C");
+        clearButton.addActionListener(this); // 'C' 버튼에 액션 리스너 등록
         clearButton.setBackground(backgroundColor); // 배경색 설정
         clearButton.setForeground(foregroundColor); // 전경색 설정
-        buttonPanel.add(clearButton); // 버튼 패널에 추가
+        buttonPanel.add(clearButton); // 'C' 버튼을 버튼 패널에 추가합니다.
 
-        add(buttonPanel, BorderLayout.CENTER); // 버튼 패널을 중앙에 추가
+        // 버튼 패널을 윈도우 창의 중앙에 추가합니다.
+        add(buttonPanel, BorderLayout.CENTER);
 
-        pack(); // 컴포넌트 크기에 맞게 윈도우 크기 조정
-        setLocationRelativeTo(null); // 윈도우를 화면 중앙에 위치
-        setVisible(true); // 윈도우를 보이게 설정
+        // 윈도우 창의 크기를 컴포넌트 크기에 맞게 조절하고, 화면 중앙에 위치시킵니다.
+        pack();
+        setLocationRelativeTo(null);
+        // 윈도우 창을 보이도록 설정합니다.
+        setVisible(true);
     }
 
+    // 액션 이벤트 처리 메서드입니다. 버튼을 클릭하면 이 메서드가 호출됩니다.
     @Override
-    public void actionPerformed(ActionEvent e) { // 액션 이벤트 처리 메소드
-        String command = e.getActionCommand(); // 눌린 버튼의 텍스트 가져오기
+    public void actionPerformed(ActionEvent e) {
+        // 발생한 이벤트의 액션 커맨드를 가져옵니다. (예: 숫자 버튼의 숫자, 연산자 기호, "=" 또는 "C")
+        String command = e.getActionCommand();
 
-        if (command.matches("[0-9]")) { // 숫자 버튼이 눌렸을 경우
-            textField.setText(textField.getText() + command); // 텍스트 필드에 숫자 추가
-        } else if (command.matches("[+\\-*/]")) { // 연산자 버튼이 눌렸을 경우
-            num1 = Double.parseDouble(textField.getText()); // 텍스트 필드의 숫자를 num1에 저장
+        // 입력된 command가 숫자인 경우
+        if (command.matches("[0-9]")) {
+            textField.setText(textField.getText() + command); // 텍스트 필드에 입력된 숫자 추가
+            adjustFontSize(); // 폰트 크기 조절
+        }
+        // 입력된 command가 연산자인 경우
+        else if (command.matches("[+\\-*/]")) {
+            num1 = Double.parseDouble(textField.getText()); // 텍스트 필드의 값을 첫 번째 숫자로 저장
             operator = command; // 연산자 저장
             textField.setText(""); // 텍스트 필드 초기화
-        } else if (command.equals("=")) { // 등호 버튼이 눌렸을 경우
-            num2 = Double.parseDouble(textField.getText()); // 텍스트 필드의 숫자를 num2에 저장
+            adjustFontSize(); // 폰트 크기 초기화
+        }
+        // 입력된 command가 "="인 경우
+        else if (command.equals("=")) {
+            num2 = Double.parseDouble(textField.getText()); // 텍스트 필드의 값을 두 번째 숫자로 저장
             calculate(); // 계산 수행
-            textField.setText(String.valueOf(result)); // 결과 텍스트 필드에 표시
-        } else if (command.equals("C")) { // 초기화 버튼이 눌렸을 경우
+            textField.setText(String.valueOf(result)); // 계산 결과를 텍스트 필드에 표시
+            adjustFontSize(); // 폰트 크기 조절
+        }
+        // 입력된 command가 "C"인 경우
+        else if (command.equals("C")) {
             textField.setText(""); // 텍스트 필드 초기화
-            num1 = 0; // num1 초기화
-            num2 = 0; // num2 초기화
+            num1 = 0; // 첫 번째 숫자 초기화
+            num2 = 0; // 두 번째 숫자 초기화
             result = 0; // 결과 초기화
             operator = ""; // 연산자 초기화
+            adjustFontSize(); // 폰트 크기 초기화
         }
     }
 
-    private void calculate() { // 계산 메소드
-        switch (operator) { // 연산자에 따라 계산 수행
+    // 계산을 수행하는 메서드입니다.
+    private void calculate() {
+        // 연산자에 따라 계산을 수행합니다.
+        switch (operator) {
             case "+":
                 result = num1 + num2; // 덧셈
                 break;
@@ -110,17 +147,43 @@ public class calculating extends JFrame implements ActionListener { // JFrame �
                 result = num1 * num2; // 곱셈
                 break;
             case "/":
-                if (num2 != 0) { // 0으로 나누는지 검사
-                    result = num1 / num2; // 나눗셈
+                if (num2 != 0) {
+                    result = num1 / num2; // 나눗셈 (0으로 나누는 경우 예외 처리)
                 } else {
-                    textField.setText("Error"); // 0으로 나누면 에러 메시지 표시
+                    textField.setText("Error"); // 0으로 나누면 "Error" 표시
                     return;
                 }
                 break;
         }
     }
 
-    public static void main(String[] args) { // 메인 메소드
-        new calculating(); // 계산기 객체 생성 및 실행
+    // 텍스트 필드의 폰트 크기를 조절하는 메서드입니다.
+    private void adjustFontSize() {
+        // 현재 텍스트 필드에 입력된 텍스트의 길이를 가져옵니다.
+        int currentLength = textField.getText().length();
+        // 기본 폰트 크기를 가져옵니다.
+        int fontSize = defaultFontSize;
+
+        // 텍스트 길이에 따라 폰트 크기를 조절합니다.
+        if (currentLength > 6) {
+            // 텍스트 길이가 10자를 초과하면, 폰트 크기를 줄입니다.
+            // 초과하는 글자 수마다 폰트 크기를 2씩 줄입니다.
+            fontSize = defaultFontSize - (currentLength - 6) * 2;
+            // 폰트 크기가 최소 폰트 크기보다 작아지지 않도록 제한합니다.
+            fontSize = Math.max(fontSize, minFontSize);
+        } else {
+            // 텍스트 길이가 6자 이하이면, 기본 폰트 크기를 사용합니다.
+            fontSize = defaultFontSize;
+        }
+
+        // 텍스트 필드의 폰트를 설정합니다. (폰트 종류: Arial, 스타일: 보통, 크기: 조정된 폰트 크기)
+        textField.setFont(new Font("Arial", Font.PLAIN, fontSize));
+    }
+
+    // main 메서드, 프로그램의 시작점입니다.
+    public static void main(String[] args) {
+        // 'calculating' 클래스의 인스턴스를 생성합니다.
+        // 이렇게 하면 계산기 창이 나타나고, 사용자와 상호작용할 수 있게 됩니다.
+        new calculating();
     }
 }
