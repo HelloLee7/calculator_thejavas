@@ -41,7 +41,7 @@ public class calculating extends JFrame implements ActionListener {
         // 텍스트 필드를 생성하고 설정합니다.
         textField = new JTextField();
         textField.setFont(new Font("Arial", Font.PLAIN, defaultFontSize)); // 폰트 설정 (Arial, 기본 스타일, 36 크기)
-        textField.setPreferredSize(new Dimension(220, 180)); // 텍스트 필드의 선호 크기를 설정합니다.
+        textField.setPreferredSize(new Dimension(220, 100)); // 텍스트 필드의 선호 크기를 설정합니다.
         textField.setHorizontalAlignment(JTextField.RIGHT); // 텍스트를 오른쪽 정렬합니다.
         textField.setBackground(backgroundColor); // 배경색 설정
         textField.setForeground(foregroundColor); // 전경색 설정
