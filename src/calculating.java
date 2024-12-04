@@ -41,7 +41,7 @@ public class calculating extends JFrame implements ActionListener {
         // 텍스트 필드를 생성하고 설정합니다.
         textField = new JTextField();
         textField.setFont(new Font("Arial", Font.PLAIN, defaultFontSize)); // 폰트 설정 (Arial, 기본 스타일, 36 크기)
-        textField.setPreferredSize(new Dimension(220, 80)); // 텍스트 필드의 선호 크기를 설정합니다.
+        textField.setPreferredSize(new Dimension(220, 180)); // 텍스트 필드의 선호 크기를 설정합니다.
         textField.setHorizontalAlignment(JTextField.RIGHT); // 텍스트를 오른쪽 정렬합니다.
         textField.setBackground(backgroundColor); // 배경색 설정
         textField.setForeground(foregroundColor); // 전경색 설정
@@ -50,7 +50,7 @@ public class calculating extends JFrame implements ActionListener {
 
         // 버튼들을 담을 패널을 생성하고 설정합니다.
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(4, 4, 8, 5)); // 4x4 grid 레이아웃으로 설정, 가로 세로 간격 5
+        buttonPanel.setLayout(new GridLayout(4, 4, 8, 5)); // 4x4 grid 레이아웃으로 설정, 가로 세로 간격
         buttonPanel.setBackground(backgroundColor); // 배경색 설정
 
         // 숫자 버튼들을 생성하고 설정합니다.
@@ -125,23 +125,56 @@ public class calculating extends JFrame implements ActionListener {
         if (command.matches("[0-9]")) {
             textField.setText(textField.getText() + command); // 텍스트 필드에 입력된 숫자 추가
             adjustFontSize(); // 폰트 크기 조절
-        }
-        // 입력된 command가 연산자인 경우
-        else if (command.matches("[+\\-*/]")) {
-            num1 = Double.parseDouble(textField.getText()); // 텍스트 필드의 값을 첫 번째 숫자로 저장
-            operator = command; // 연산자 저장
-            textField.setText(""); // 텍스트 필드 초기화
-            adjustFontSize(); // 폰트 크기 초기화
-        }
-        // 입력된 command가 "="인 경우
-        else if (command.equals("=")) {
-            num2 = Double.parseDouble(textField.getText()); // 텍스트 필드의 값을 두 번째 숫자로 저장
-            calculate(); // 계산 수행
-            textField.setText(String.valueOf(result)); // 계산 결과를 텍스트 필드에 표시
-            adjustFontSize(); // 폰트 크기 조절
-        }
-        // 입력된 command가 "C"인 경우
-        else if (command.equals("C")) {
+        } else if (command.matches("[+\\-*/]")) { // 연산자 버튼(+, -, *, /)이 눌렸을 때
+            String currentText = textField.getText(); // 현재 텍스트 필드의 내용을 currentText에 저장
+            if (!currentText.isEmpty() && !currentText.matches(".*[+\\-*/]$")) {
+                // 텍스트 필드가 비어있지 않고, 마지막 문자가 연산자가 아닌 경우
+                try {
+                    num1 = Double.parseDouble(currentText); // 현재 텍스트를 숫자(double)로 변환하여 num1에 저장
+                } catch (NumberFormatException ex) { // 숫자 변환에 실패하면 (예: 숫자가 아닌 문자 입력)
+                    textField.setText("Error"); // 텍스트 필드에 "Error" 표시
+                    return; // 메소드 종료
+                }
+                operator = command;  // 눌린 연산자 버튼의 값을 operator에 저장
+                textField.setText(currentText + command); // 텍스트 필드에 기존 내용과 연산자를 함께 표시 (예: "123+", "45.6*")
+                adjustFontSize(); // 텍스트 필드의 글자 크기 조정
+            } else if (!currentText.isEmpty()){ // 텍스트 필드가 비어있지 않은데 위 조건을 만족하지 않는 경우, 즉 마지막 문자가 연산자인 경우
+                operator = command; // 눌린 연산자를 operator에 저장
+                textField.setText(currentText.substring(0, currentText.length()-1) + command); // 마지막 연산자를 현재 연산자로 교체
+            }
+        } else if (command.equals("=")) { // "=" 버튼이 눌렸을 때
+            try {
+                String expression = textField.getText(); // 텍스트 필드의 내용을 expression에 저장
+                if (expression.isEmpty()) return; // 텍스트 필드가 비어있으면 메소드 종료
+                if (!expression.matches(".*[+\\-*/].*")) return; // 연산자가 없으면 메소드 종료
+                String[] parts = expression.split("[+\\-*/]"); // expression을 연산자를 기준으로 분할하여 parts 배열에 저장
+                if(parts.length == 2){ // parts 배열의 길이가 2인 경우 (정상적인 수식 - 숫자, 연산자, 숫자)
+                    num1 = Double.parseDouble(parts[0]); // 첫 번째 숫자를 num1에 저장
+                    num2 = Double.parseDouble(parts[1]); // 두 번째 숫자를 num2에 저장
+                    operator = String.valueOf(expression.charAt(parts[0].length()));// 연산자 추출
+                    calculate(); // calculate() 메서드 호출하여 계산 수행
+                    textField.setText(String.valueOf(result)); // 계산 결과를 텍스트 필드에 표시
+                    adjustFontSize(); // 텍스트 필드의 글자 크기 조정
+                }else if (parts.length<2){ // parts 배열의 길이가 2보다 작은 경우 (숫자 또는 연산자 하나만 입력된 경우)
+                    textField.setText("Error"); // 텍스트 필드에 "Error" 표시
+                }else{ //parts 배열의 길이가 2보다 큰 경우 (연속 계산)
+                    num1 = Double.parseDouble(parts[0]);  // 첫 번째 숫자 저장
+                    operator = String.valueOf(expression.charAt(parts[0].length())); // 첫 번째 연산자 저장
+                    for (int i = 1; i < parts.length; i++) { // parts 배열의 두 번째 요소부터 반복
+                        num2 = Double.parseDouble(parts[i]); // 현재 숫자를 num2에 저장
+                        calculate(); // 계산 수행
+                        num1 = result; // 계산 결과를 num1에 저장 (다음 계산을 위해)
+                        if(i+1<parts.length)  operator = String.valueOf(expression.charAt(expression.indexOf(String.valueOf(num2))+String.valueOf(num2).length())); // 다음 연산자 저장
+                    }
+                    textField.setText(String.valueOf(result)); // 최종 계산 결과를 텍스트 필드에 표시
+                    adjustFontSize(); // 텍스트 필드의 글자 크기 조정
+                }
+
+            } catch (NumberFormatException ex) { // 숫자 변환에 실패하면 (예: 숫자가 아닌 문자 입력)
+                textField.setText("Error"); // 텍스트 필드에 "Error" 표시
+            }
+            // 입력된 command가 "C"인 경우
+        }else if (command.equals("C")) {
             textField.setText(""); // 텍스트 필드 초기화
             num1 = 0; // 첫 번째 숫자 초기화
             num2 = 0; // 두 번째 숫자 초기화
