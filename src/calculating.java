@@ -106,12 +106,18 @@ public class calculating extends JFrame implements ActionListener {
         buttonPanel.add(clearButton);
 
         // 버튼 패널을 윈도우 창의 중앙에 추가합니다.
-        add(buttonPanel, BorderLayout.CENTER);
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.add(buttonPanel, BorderLayout.CENTER); // buttonPanel을 중앙에 배치
+        add(centerPanel, BorderLayout.CENTER); // 새로운 패널을 BorderLayout.CENTER에 추가
 
-        // 윈도우 창의 크기를 컴포넌트 크기에 맞게 조절하고, 화면 중앙에 위치시킵니다.
+        // 남쪽에 빈 공간 추가
+        JPanel southPanel = new JPanel();
+        southPanel.setPreferredSize(new Dimension(0, 20));
+        southPanel.setBackground(backgroundColor);
+        add(southPanel, BorderLayout.SOUTH);
+
         pack();
         setLocationRelativeTo(null);
-        // 윈도우 창을 보이도록 설정합니다.
         setVisible(true);
     }
 
