@@ -32,11 +32,12 @@ public class calculating extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // 윈도우 창의 레이아웃을 BorderLayout으로 설정합니다.
         // BorderLayout은 컴포넌트들을 동서남북중앙에 배치하는 레이아웃 매니저입니다.
-        setLayout(new BorderLayout());
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         // 배경색 및 전경색 설정
         Color backgroundColor = Color.decode("#cfcfcf"); // 배경색을 주황색으로 설정합니다.
         Color foregroundColor = Color.BLACK; // 전경색(글자색)을 검정색으로 설정합니다.
+        Color setgroundColor = Color.decode("#cfcfcf");
 
         // 텍스트 필드를 생성하고 설정합니다.
         textField = new JTextField();
@@ -52,6 +53,19 @@ public class calculating extends JFrame implements ActionListener {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(4, 4, 8, 5)); // 4x4 grid 레이아웃으로 설정, 가로 세로 간격
         buttonPanel.setBackground(backgroundColor); // 배경색 설정
+        add(textField);
+
+        JPanel middlePanel = new JPanel();
+        middlePanel.setPreferredSize(new Dimension(0, 25));
+        middlePanel.setBackground(setgroundColor); // setgroundColor로 배경색 설정
+        add(middlePanel);
+
+        JPanel buttonContainer = new JPanel(); // buttonPanel을 감싸는 새로운 패널
+        buttonContainer.setLayout(new BoxLayout(buttonContainer, BoxLayout.Y_AXIS));
+        buttonContainer.add(buttonPanel);  // buttonPanel을 새로운 패널에 추가
+        add(buttonContainer); // 새로운 패널을 프레임에 추가
+
+
 
         // 숫자 버튼들을 생성하고 설정합니다.
         numberButtons = new JButton[10]; // 0부터 9까지 10개의 버튼 배열 생성
