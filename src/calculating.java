@@ -3,6 +3,9 @@ import javax.swing.*; // GUI 컴포넌트들을 제공하는 Swing 라이브러�
 import java.awt.*; // AWT(Abstract Window Toolkit) 라이브러리, GUI와 그래픽 관련 클래스 제공
 import java.awt.event.ActionEvent; // 액션 이벤트 처리를 위한 클래스
 import java.awt.event.ActionListener; // 액션 리스너 인터페이스
+import javax.swing.border.Border;
+
+
 
 // 'calculating' 클래스를 선언합니다. JFrame을 상속받고 ActionListener 인터페이스를 구현합니다.
 // JFrame은 윈도우 창을 만드는 클래스이고, ActionListener는 버튼 클릭 등의 이벤트를 처리하는 인터페이스입니다.
@@ -32,13 +35,13 @@ public class calculating extends JFrame implements ActionListener {
         setLayout(new BorderLayout());
 
         // 배경색 및 전경색 설정
-        Color backgroundColor = Color.decode("#e38c00"); // 배경색을 주황색으로 설정합니다.
+        Color backgroundColor = Color.decode("#cfcfcf"); // 배경색을 주황색으로 설정합니다.
         Color foregroundColor = Color.BLACK; // 전경색(글자색)을 검정색으로 설정합니다.
 
         // 텍스트 필드를 생성하고 설정합니다.
         textField = new JTextField();
         textField.setFont(new Font("Arial", Font.PLAIN, defaultFontSize)); // 폰트 설정 (Arial, 기본 스타일, 36 크기)
-        textField.setPreferredSize(new Dimension(150, 80)); // 텍스트 필드의 선호 크기를 설정합니다.
+        textField.setPreferredSize(new Dimension(220, 80)); // 텍스트 필드의 선호 크기를 설정합니다.
         textField.setHorizontalAlignment(JTextField.RIGHT); // 텍스트를 오른쪽 정렬합니다.
         textField.setBackground(backgroundColor); // 배경색 설정
         textField.setForeground(foregroundColor); // 전경색 설정
@@ -58,6 +61,10 @@ public class calculating extends JFrame implements ActionListener {
             numberButtons[i].setBackground(backgroundColor); // 배경색 설정
             numberButtons[i].setForeground(foregroundColor); // 전경색 설정
             buttonPanel.add(numberButtons[i]); // 숫자 버튼을 버튼 패널에 추가합니다.
+            Border raisedBevelBorder = BorderFactory.createRaisedBevelBorder();
+            numberButtons[i].setBorder(raisedBevelBorder);
+
+            buttonPanel.add(numberButtons[i]);
         }
 
         // 연산자 버튼들을 생성하고 설정합니다.
@@ -71,6 +78,10 @@ public class calculating extends JFrame implements ActionListener {
             operatorButtons[i].setBackground(backgroundColor); // 배경색 설정
             operatorButtons[i].setForeground(foregroundColor); // 전경색 설정
             buttonPanel.add(operatorButtons[i]); // 연산자 버튼을 버튼 패널에 추가합니다.
+            Border raisedBevelBorder = BorderFactory.createRaisedBevelBorder();
+            operatorButtons[i].setBorder(raisedBevelBorder);
+
+            buttonPanel.add(operatorButtons[i]);
         }
 
         // '=' 버튼을 생성하고 설정합니다.
@@ -79,6 +90,10 @@ public class calculating extends JFrame implements ActionListener {
         equalsButton.setBackground(backgroundColor); // 배경색 설정
         equalsButton.setForeground(foregroundColor); // 전경색 설정
         buttonPanel.add(equalsButton); // '=' 버튼을 버튼 패널에 추가합니다.
+        Border raisedBevelBorder = BorderFactory.createRaisedBevelBorder();
+        equalsButton.setBorder(raisedBevelBorder);
+
+        buttonPanel.add(equalsButton);
 
         // 'C' 버튼을 생성하고 설정합니다.
         clearButton = new JButton("C");
@@ -86,6 +101,9 @@ public class calculating extends JFrame implements ActionListener {
         clearButton.setBackground(backgroundColor); // 배경색 설정
         clearButton.setForeground(foregroundColor); // 전경색 설정
         buttonPanel.add(clearButton); // 'C' 버튼을 버튼 패널에 추가합니다.
+        clearButton.setBorder(raisedBevelBorder);
+
+        buttonPanel.add(clearButton);
 
         // 버튼 패널을 윈도우 창의 중앙에 추가합니다.
         add(buttonPanel, BorderLayout.CENTER);
