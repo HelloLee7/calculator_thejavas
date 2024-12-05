@@ -35,30 +35,36 @@ public class calculating extends JFrame implements ActionListener {
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         // 배경색 및 전경색 설정
-        Color backgroundColor = Color.decode("#cfcfcf"); // 배경색을 주황색으로 설정합니다.
-        Color foregroundColor = Color.BLACK; // 전경색(글자색)을 검정색으로 설정합니다.
-        Color setgroundColor = Color.decode("#cfcfcf");
+        Color backgroundColor = Color.BLACK;//
+        Color foregroundColor = Color.WHITE; // 전경색(글자색)을 검정색으로 설정합니다.
+        Color setgroundColor = Color.BLACK;
+        Color numberButtonColor = Color.decode("#e0e0e0"); // 숫자 버튼 배경색
+        Color operatorButtonColor = Color.decode("#6a8f5a"); // 연산자 버튼 배경색
+        Color equalsButtonColor = Color.decode("#ff9900"); // = 버튼 배경색
+        Color clearButtonColor = Color.decode("#ff9900"); // C 버튼 배경색
+
+
 
         // 텍스트 필드를 생성하고 설정합니다.
         textField = new JTextField();
         textField.setFont(new Font("Arial", Font.PLAIN, defaultFontSize)); // 폰트 설정 (Arial, 기본 스타일, 36 크기)
-        textField.setPreferredSize(new Dimension(220, 100)); // 텍스트 필드의 선호 크기를 설정합니다.
+        textField.setPreferredSize(new Dimension(220, 180)); // 텍스트 필드의 선호 크기를 설정합니다.
         textField.setHorizontalAlignment(JTextField.RIGHT); // 텍스트를 오른쪽 정렬합니다.
         textField.setBackground(backgroundColor); // 배경색 설정
         textField.setForeground(foregroundColor); // 전경색 설정
         textField.setCaretColor(foregroundColor); // caret(커서) 색상 설정
+        textField.setBorder(BorderFactory.createEmptyBorder());
         add(textField, BorderLayout.NORTH); // 텍스트 필드를 윈도우 창의 북쪽에 추가합니다.
 
         // 버튼들을 담을 패널을 생성하고 설정합니다.
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(4, 4, 8, 5)); // 4x4 grid 레이아웃으로 설정, 가로 세로 간격
         buttonPanel.setBackground(backgroundColor); // 배경색 설정
+        Border margin = BorderFactory.createEmptyBorder(0, 5, 0, 5);
+        buttonPanel.setBorder(BorderFactory.createCompoundBorder(margin, BorderFactory.createRaisedBevelBorder()));
         add(textField);
 
-        JPanel middlePanel = new JPanel();
-        middlePanel.setPreferredSize(new Dimension(0, 25));
-        middlePanel.setBackground(setgroundColor); // setgroundColor로 배경색 설정
-        add(middlePanel);
+
 
         JPanel buttonContainer = new JPanel(); // buttonPanel을 감싸는 새로운 패널
         buttonContainer.setLayout(new BoxLayout(buttonContainer, BoxLayout.Y_AXIS));
@@ -74,6 +80,7 @@ public class calculating extends JFrame implements ActionListener {
             numberButtons[i].addActionListener(this); // 버튼에 액션 리스너(this, 즉 현재 클래스)를 등록합니다.
             numberButtons[i].setBackground(backgroundColor); // 배경색 설정
             numberButtons[i].setForeground(foregroundColor); // 전경색 설정
+            numberButtons[i].setBackground(numberButtonColor);
             buttonPanel.add(numberButtons[i]); // 숫자 버튼을 버튼 패널에 추가합니다.
             Border raisedBevelBorder = BorderFactory.createRaisedBevelBorder();
             numberButtons[i].setBorder(raisedBevelBorder);
@@ -91,6 +98,7 @@ public class calculating extends JFrame implements ActionListener {
             operatorButtons[i].addActionListener(this); // 연산자 버튼에 액션 리스너 등록
             operatorButtons[i].setBackground(backgroundColor); // 배경색 설정
             operatorButtons[i].setForeground(foregroundColor); // 전경색 설정
+            operatorButtons[i].setBackground(operatorButtonColor);
             buttonPanel.add(operatorButtons[i]); // 연산자 버튼을 버튼 패널에 추가합니다.
             Border raisedBevelBorder = BorderFactory.createRaisedBevelBorder();
             operatorButtons[i].setBorder(raisedBevelBorder);
@@ -103,6 +111,7 @@ public class calculating extends JFrame implements ActionListener {
         equalsButton.addActionListener(this); // '=' 버튼에 액션 리스너 등록
         equalsButton.setBackground(backgroundColor); // 배경색 설정
         equalsButton.setForeground(foregroundColor); // 전경색 설정
+        equalsButton.setBackground(equalsButtonColor);
         buttonPanel.add(equalsButton); // '=' 버튼을 버튼 패널에 추가합니다.
         Border raisedBevelBorder = BorderFactory.createRaisedBevelBorder();
         equalsButton.setBorder(raisedBevelBorder);
@@ -114,6 +123,7 @@ public class calculating extends JFrame implements ActionListener {
         clearButton.addActionListener(this); // 'C' 버튼에 액션 리스너 등록
         clearButton.setBackground(backgroundColor); // 배경색 설정
         clearButton.setForeground(foregroundColor); // 전경색 설정
+        clearButton.setBackground(clearButtonColor);
         buttonPanel.add(clearButton); // 'C' 버튼을 버튼 패널에 추가합니다.
         clearButton.setBorder(raisedBevelBorder);
 
@@ -126,7 +136,7 @@ public class calculating extends JFrame implements ActionListener {
 
         // 남쪽에 빈 공간 추가
         JPanel southPanel = new JPanel();
-        southPanel.setPreferredSize(new Dimension(0, 20));
+        southPanel.setPreferredSize(new Dimension(0, 30));
         southPanel.setBackground(backgroundColor);
         add(southPanel, BorderLayout.SOUTH);
 
